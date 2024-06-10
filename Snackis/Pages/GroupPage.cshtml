@@ -1,0 +1,68 @@
+﻿@page
+@model Snackis.Pages.GroupPageModel
+@{
+}
+
+@if (Model.CurrentGroup != null)
+{
+    <h3>Medlemmar</h3>
+    @foreach (var id in Model.CurrentGroup.UserIds)
+    {
+        <span>@Model.FindUsername(id).Result</span>
+        if (id != Model.MyUser.Id && Model.CurrentGroup.UserIds[0] == Model.MyUser.Id)
+        {
+            <a asp-route-groupId="@Model.CurrentGroup.Id" asp-route-kickUserId="@id">Ta bort</a>
+        }
+        <br />
+    }
+    <br />
+
+    @foreach (var message in Model.GroupMessages)
+    {
+        @if (Model.MyUser.Id == message.UserId)
+        {
+            <div style="text-align:right" class="card border alert alert-light">
+                <p>@message.Date</p>
+                <p>@message.Text</p>
+                <p>@Model.FindUsername(message.UserId).Result</p>
+            </div>
+        }
+        else
+        {
+            <div class="card border alert alert-light">
+                <p>@message.Date</p>
+                <p>@message.Text</p>
+                <p>@Model.FindUsername(message.UserId).Result</p>
+            </div>
+        }
+    }
+
+    <div class="d-flex justify-content-end">
+        <form method="post" asp-page-handler="message">
+            <input type="hidden" asp-for="NewMessage.GroupId" value="@Model.CurrentGroup.Id" />
+            <input asp-for="NewMessage.Text" />
+            <input type="submit" valuse="Skicka" />
+        </form>
+    </div>
+}
+else
+{
+    @foreach (var group in Model.MyGroups)
+    {
+        <a asp-route-groupId="@group.Id">@group.Name</a>
+        @if (group.UserIds[0] == Model.MyUser.Id)
+        {
+            <a class="alert alert-danger" asp-route-deleteGroupId="@group.Id">Radera grupp</a>
+        }
+        <br />
+        <br />
+    }
+
+    <br />
+    <br />
+    <form method="post">
+        <label asp-for="NewGroup.Name">Gruppnamn</label>
+        <input asp-for="NewGroup.Name" />
+        <input type="submit" value="Skapa ny grupp" />
+    </form>
+}

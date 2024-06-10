@@ -1,0 +1,29 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<br />
+<br />
+<br />
+
+<div class="row">
+    @if (Model.TopCategories != null)
+    {
+
+        foreach (var category in Model.TopCategories)
+        {
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <h2 class="display-6 m2 text-light shadow">@category.Name</h2>
+                @foreach (var subCat in Model.Categories.Where(c => c.ParentId == category.Id))
+                {
+                    <h5 class="m-2 p-2"><a style="text-decoration:none" class="btn-link text-black" asp-route-showId="@subCat.Id">@subCat.Name</a></h5>
+                }
+            </div>
+
+        }
+
+    }
+</div>

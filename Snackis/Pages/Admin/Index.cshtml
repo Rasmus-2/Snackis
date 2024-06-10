@@ -1,0 +1,70 @@
+﻿@page
+@model Snackis.Pages.Admin.IndexModel
+@{
+}
+
+@if (User.IsInRole("SuperAdmin"))
+{
+    <a href="./Admin/RoleAdmin/Index/">Roller</a>
+    <hr />
+}
+
+<a href="./Admin/CategoryAdmin/">Kategorier</a>
+<br />
+<br />
+<a href="./Admin/DMAdmin/">Meddelanden</a>
+<br />
+<br />
+<a href="./Admin/FlagPostAdmin/">Anmälda inlägg</a>
+<br />
+<br />
+<a href="./Admin/ForumPostAdmin/">Inlägg</a>
+<br />
+<br />
+<a href="./Admin/GroupAdmin/">Grupper</a>
+<br />
+<br />
+<a href="./Admin/GroupMessageAdmin/">Gruppmeddelanden</a>
+<br />
+<br />
+<a href="./Admin/InviteAdmin/">Inbjudningar</a>
+<br />
+<br />
+<a href="./Admin/MyInfoPageAdmin/">Egna sidor</a>
+<br />
+<br />
+<hr />
+
+<h3>Sammanställning anmälda inlägg</h3>
+
+@foreach (var flaggedPost in Model.FlagPosts)
+{
+    var forumPost = Model.GetCurrentForumPost(flaggedPost.ForumPostId).Result;
+    @if (forumPost != null)
+    {
+        <div class="card m-2 alert alertalert-light border">
+            @if (forumPost.Image != null && forumPost.Image != "")
+            {
+                <img class="card-img-top" src="~/images/postImages/@forumPost.Image" style="width: 18rem" />
+            }
+            <div class="card-body">
+                <p>@forumPost.Text</p>
+            </div>
+            <div class="card-footer">
+                <p>@Model.FindUserName(@forumPost.UserId).Result</p>
+                <p>@forumPost.Date</p>
+            </div>
+            <p>PostId: @forumPost.Id | FlagId: @flaggedPost.Id</p>
+            @if (flaggedPost.FlaggedByUserIds.Count == 1)
+            {
+                <p>Anmäld av @flaggedPost.FlaggedByUserIds.Count person</p>
+            }
+            else
+            {
+                <p>Anmäld av @flaggedPost.FlaggedByUserIds.Count personer</p>
+            }
+
+            <a class="btn btn-danger" asp-route-deleteId="@flaggedPost.Id">Radera inlägg</a>
+        </div>
+    }
+}

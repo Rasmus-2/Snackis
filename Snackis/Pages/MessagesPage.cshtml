@@ -1,0 +1,43 @@
+﻿@page
+@model Snackis.Pages.MessagesPageModel
+@{
+}
+
+@if (Model.CorrespondentId != null)
+{
+    @foreach (var dm in Model.CurrentDMs)
+    {
+        @if (Model.MyUser.Id == dm.UserIds[0])
+        {
+            <div style="text-align:right" class="card border alert alert-light">
+                <p>@dm.Date</p>
+                <p>@dm.Text</p>
+                <p>@Model.FindUsername(dm.UserIds[0]).Result</p>
+            </div>
+        }
+        else
+        {
+            <div class="card border alert alert-light">
+                <p>@dm.Date</p>
+                <p>@dm.Text</p>
+                <p>@Model.FindUsername(dm.UserIds[0]).Result</p>
+            </div>
+        }
+    }
+    <div class="d-flex justify-content-end">
+        <form method="post">
+            <input type="hidden" asp-for="CorrespondentId" value="@Model.CorrespondentId" />
+            <input asp-for="NewDM.Text" />
+            <input type="submit" valuse="Skicka" />
+        </form>
+    </div>
+}
+else
+{
+    @foreach (var userId in Model.MyCorrespondents)
+    {
+        <a asp-route-userId="@userId">@Model.FindUsername(userId).Result</a>
+        <br />
+    }
+}
+

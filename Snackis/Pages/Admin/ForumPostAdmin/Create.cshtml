@@ -1,0 +1,70 @@
+﻿@page
+@model Snackis.Pages.Admin.ForumPostAdmin.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>ForumPost</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ForumPost.ParentId" class="control-label"></label>
+                <input asp-for="ForumPost.ParentId" class="form-control" />
+                <span asp-validation-for="ForumPost.ParentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ForumPost.Date" class="control-label"></label>
+                <input asp-for="ForumPost.Date" class="form-control" />
+                <span asp-validation-for="ForumPost.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ForumPost.Header" class="control-label"></label>
+                <input asp-for="ForumPost.Header" class="form-control" />
+                <span asp-validation-for="ForumPost.Header" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ForumPost.Text" class="control-label"></label>
+                <input asp-for="ForumPost.Text" class="form-control" />
+                <span asp-validation-for="ForumPost.Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ForumPost.Image" class="control-label"></label>
+                <input asp-for="ForumPost.Image" class="form-control" />
+                <span asp-validation-for="ForumPost.Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ForumPost.UserIdLikes" class="control-label"></label>
+                <input asp-for="ForumPost.UserIdLikes" class="form-control" />
+                <span asp-validation-for="ForumPost.UserIdLikes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ForumPost.UserId" class="control-label"></label>
+                <input asp-for="ForumPost.UserId" class="form-control" />
+                <span asp-validation-for="ForumPost.UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ForumPost.CategoryId" class="control-label"></label>
+                <input asp-for="ForumPost.CategoryId" class="form-control" />
+                <span asp-validation-for="ForumPost.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

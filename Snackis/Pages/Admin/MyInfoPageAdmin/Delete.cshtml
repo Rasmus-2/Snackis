@@ -1,0 +1,53 @@
+﻿@page
+@model Snackis.Pages.Admin.MyInfoPageAdmin.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>MyInfoPage</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MyInfoPage.LastChanged)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MyInfoPage.LastChanged)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MyInfoPage.Header)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MyInfoPage.Header)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MyInfoPage.Text)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MyInfoPage.Text)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MyInfoPage.Image)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MyInfoPage.Image)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MyInfoPage.UserId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MyInfoPage.UserId)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="MyInfoPage.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

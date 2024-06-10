@@ -1,0 +1,302 @@
+﻿@page
+@using Extensions
+@model Snackis.Pages.ThreadModel
+@{
+}
+
+<!-- Original Post -->
+@if (Model.OriginalPost != null)
+{
+    <div class="row">
+        <div class="card col-xl-6 col-lg-8 col-md-10 col-sm-12">
+            <div class="card-header row">
+                @if (Model.OriginalPost.Header != null)
+                {
+                    <h1 class="card-title">@Model.OriginalPost.Header.Censor()</h1>
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-4 border bg-light">
+                    <a asp-route-userId="@Model.OriginalPost.UserId"><p>@Model.FindUserName(Model.OriginalPost.UserId).Result</p></a>
+                    @if (@Model.FindUserProfilePicture(Model.OriginalPost.UserId).Result != null)
+                    {
+                        <img class="img-fluid" src="~/images/profilePictureImages/@Model.FindUserProfilePicture(Model.OriginalPost.UserId).Result" />
+                    }
+                    <br /><br />
+                    <p>@Model.OriginalPost.Date</p>
+
+                </div>
+                <div class="col-8">
+                    @if (Model.OriginalPost.Image != null && Model.OriginalPost.Image != "")
+                    {
+                        <img class="img-fluid" src="~/images/postImages/@Model.OriginalPost.Image" />
+                    }
+                    <br /><br />
+                    @if (Model.OriginalPost.Text != null)
+                    {
+                        <p class="card-text" style="white-space:pre-wrap">@Model.OriginalPost.Text.Censor()</p>
+                    }
+                    <br />
+                </div>
+            </div>
+
+            <div class="card-footer row">
+                <div class="col">
+
+                    @if (Model.OriginalPost.UserIdLikes.Count() > 1)
+                    {
+                        <p>@Model.OriginalPost.UserIdLikes.Count() personer gillar det här inlägget</p>
+                    }
+                    else if (Model.OriginalPost.UserIdLikes.Count() == 1)
+                    {
+                        <p>@Model.OriginalPost.UserIdLikes.Count() person gillar det här inlägget</p>
+                    }
+                </div>
+                <div class="col">
+                    <div class="row">
+                        @if (Model.MyUser != null)
+                        {
+                            if (Model.MyUser.Id == Model.OriginalPost.UserId)
+                            {
+                                <div class="col">
+                                    <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-deleteId="@Model.OriginalPost.Id" class="btn btn-danger">Radera</a>
+                                </div>
+                            }
+                            else
+                            {
+                                if (Model.AlreadyFlaggedByMe(Model.OriginalPost.Id).Result == false)
+                                {
+                                    <div class="col">
+                                        <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-flagPostId="@Model.OriginalPost.Id" class="btn btn-danger">Anmäl</a>
+                                    </div>
+                                }
+                                <div class="col">
+                                    <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-likeId="@Model.OriginalPost.Id" class="btn btn-success">Gilla</a>
+                                </div>
+                            }
+                            <div class="col">
+                                <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-answerId="@Model.OriginalPost.Id" class="btn btn-primary">Svara</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-4 col-md-2 col-sm-0"></div>
+    </div>
+    <br />
+
+    @if (Model.MyUser != null && Model.MakeNewPost == Model.OriginalPost.Id)
+    {
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="NewPost.CategoryId" value="@Model.OriginalPost.CategoryId" />
+            <input type="hidden" asp-for="NewPost.ParentId" value="@Model.OriginalPost.Id" />
+
+            <label asp-for="NewPost.Text">Text</label>
+            <textarea asp-for="NewPost.Text" cols="40" rows="5"></textarea>
+            <br /><br />
+
+            <label asp-for="NewPost.Image"></label>
+            <input type="file" name="UploadedImage" />
+            <br /><br />
+
+            <input type="submit" class="btn btn-success" value="Skapa" />
+            <br /><br /><br />
+
+        </form>
+    }
+}
+
+<!-- Posts -->
+@if (Model.ThreadPosts != null)
+{
+    @foreach (var post in Model.ThreadPosts)
+    {
+        <div class="row">
+            <div class="col-xl-1 col-lg-3 col-md-1 col-sm-0"></div>
+            <div class="card col-xl-6 col-lg-8 col-md-10 col-sm-12">
+                <div class="row">
+                    <div class="col-4 border bg-light">
+                        <a asp-route-userId="@post.UserId"><p>@Model.FindUserName(post.UserId).Result</p></a>
+                        @if (@Model.FindUserProfilePicture(post.UserId).Result != null)
+                        {
+                            <img class="img-fluid" src="~/images/profilePictureImages/@Model.FindUserProfilePicture(post.UserId).Result" />
+                        }
+                        <br /><br />
+                        <p>@post.Date</p>
+
+                    </div>
+                    <div class="col-8">
+                        @if (post.Image != null && post.Image != "")
+                        {
+                            <img class="img-fluid" src="~/images/postImages/@post.Image" />
+                        }
+                        <br /><br />
+                        @if (post.Text != null)
+                        {
+                            <p class="card-text" style="white-space:pre-wrap">@post.Text.Censor()</p>
+                        }
+                        <br />
+                    </div>
+                </div>
+
+                <div class="card-footer row">
+                    <div class="col">
+
+                        @if (post.UserIdLikes.Count() > 1)
+                        {
+                            <p>@post.UserIdLikes.Count() personer gillar det här inlägget</p>
+                        }
+                        else if (post.UserIdLikes.Count() == 1)
+                        {
+                            <p>@post.UserIdLikes.Count() person gillar det här inlägget</p>
+                        }
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            @if (Model.MyUser != null)
+                            {
+                                if (Model.MyUser.Id == post.UserId)
+                                {
+                                    <div class="col">
+                                        <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-deleteId="@post.Id" class="btn btn-danger">Radera</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (Model.AlreadyFlaggedByMe(post.Id).Result == false)
+                                    {
+                                        <div class="col">
+                                            <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-flagPostId="@post.Id" class="btn btn-danger">Anmäl</a>
+                                        </div>
+                                    }
+                                    <div class="col">
+                                        <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-likeId="@post.Id" class="btn btn-success">Gilla</a>
+                                    </div>
+                                }
+                                <div class="col">
+                                    <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-answerId="@post.Id" class="btn btn-primary">Svara</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-5 col-lg-3 col-md-1 col-sm-0"></div>
+        </div>
+        <br />
+
+        @if (Model.MyUser != null && Model.MakeNewPost == post.Id)
+        {
+
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="@Model.OriginalPost" value="@Model.OriginalPost" />
+                <input type="hidden" asp-for="NewPost.CategoryId" value="@Model.OriginalPost.CategoryId" />
+                <input type="hidden" asp-for="NewPost.ParentId" value="@post.Id" />
+
+                <label asp-for="NewPost.Text">Text</label>
+                <textarea asp-for="NewPost.Text" cols="40" rows="5"></textarea>
+                <br /><br />
+
+                <label asp-for="NewPost.Image"></label>
+                <input type="file" name="UploadedImage" />
+                <br /><br />
+
+                <input type="submit" class="btn btn-success" value="Skapa" />
+                <br /><br /><br />
+            </form>
+        }
+
+        <!-- Subpost -->
+        @foreach (var subPost in Model.SubPosts.Where(t => t.ParentId == post.Id))
+        {
+            <div class="row">
+                <div class="col-xl-2 col-lg-4 col-md-2 col-sm-0"></div>
+                <div class="card col-xl-6 col-lg-8 col-md-10 col-sm-12">
+                    <div class="row">
+                        <div class="col-4 border bg-light">
+                            <a asp-route-userId="@subPost.UserId"><p>@Model.FindUserName(subPost.UserId).Result</p></a>
+                            @if (@Model.FindUserProfilePicture(subPost.UserId).Result != null)
+                            {
+                                <img class="img-fluid" src="~/images/profilePictureImages/@Model.FindUserProfilePicture(subPost.UserId).Result" />
+                            }
+                            <br /><br />
+                            <p>@subPost.Date</p>
+
+                        </div>
+                        <div class="col-8">
+                            @if (subPost.Image != null && subPost.Image != "")
+                            {
+                                <img class="img-fluid" src="~/images/postImages/@subPost.Image" />
+                            }
+                            <br /><br />
+                            <p class="card-text" style="white-space:pre-wrap">@subPost.Text.Censor()</p>
+                            <br />
+                        </div>
+                    </div>
+
+                    <div class="card-footer row">
+                        <div class="col">
+
+                            @if (subPost.UserIdLikes.Count() > 1)
+                            {
+                                <p>@subPost.UserIdLikes.Count() personer gillar det här inlägget</p>
+                            }
+                            else if (subPost.UserIdLikes.Count() == 1)
+                            {
+                                <p>@subPost.UserIdLikes.Count() person gillar det här inlägget</p>
+                            }
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                @if (Model.MyUser != null)
+                                {
+                                    if (Model.MyUser.Id == subPost.UserId)
+                                    {
+                                        <div class="col">
+                                            <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-deleteId="@subPost.Id" class="btn btn-danger">Radera</a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (Model.AlreadyFlaggedByMe(subPost.Id).Result == false)
+                                        {
+                                            <div class="col">
+                                                <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-flagPostId="@subPost.Id" class="btn btn-danger">Anmäl</a>
+                                            </div>
+                                        }
+                                        <div class="col">
+                                            <a asp-route-threadId="@Model.OriginalPost.Id" asp-route-likeId="@subPost.Id" class="btn btn-success">Gilla</a>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-4 col-md-2 col-sm-0"></div>
+            </div>
+            <br />
+
+            <!-- Not yet implemented -->
+            @if (Model.MyUser != null && Model.MakeNewPost == subPost.Id)
+            {
+                <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="NewPost.CategoryId" value="@Model.OriginalPost.CategoryId" />
+
+                    <label asp-for="NewPost.Text">Text</label>
+                    <textarea asp-for="NewPost.Text" cols="40" rows="5"></textarea>
+                    <br /><br />
+
+                    <label asp-for="NewPost.Image"></label>
+                    <input type="file" name="UploadedImage" />
+                    <br /><br />
+
+                    <input type="submit" class="btn btn-success" value="Skapa" />
+                    <br /><br /><br />
+                </form>
+            }
+        }
+    }
+}

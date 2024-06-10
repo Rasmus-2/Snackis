@@ -1,0 +1,61 @@
+﻿@page
+@using Extensions
+@model Snackis.Pages.ForumModel
+@{
+}
+
+@if (Model.Category != null && Model.ForumPosts != null)
+{
+    <h1 class="display-4 m-2">@Model.Category.Name</h1>
+
+    <div class="row">
+        @foreach (var fPost in Model.ForumPosts)
+        {
+            <a asp-route-showThreadId="@fPost.Id">
+                <div class="card p-2" style="width: 18rem">
+                    <div class="card-body">
+                        @if (fPost.Header != null)
+                        {
+                            <h5 class="card-title">@fPost.Header.Censor()</h5>
+                        }
+                        @if (fPost.Text != null)
+                        {
+                            <p class="card-text" style="white-space:pre-wrap">@fPost.Text.Censor().LimitLength(50)...</p>
+                        }
+                        @if (Model.MyUser != null && Model.MyUser.Id == fPost.UserId)
+                        {
+                            <a asp-route-categoryId="@fPost.CategoryId" asp-route-deleteId="@fPost.Id" class="btn btn-primary">Radera</a>
+                        }
+                    </div>
+                    <p class="card-footer">@fPost.Date</p>
+                </div>
+            </a>
+        }
+    </div>
+}
+
+@if (Model.MyUser != null && Model.Category != null)
+{
+    <br />
+    <br />
+    <br />
+    <h2 class="display-5">Skapa ny tråd</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="NewPost.CategoryId" value="@Model.Category.Id" />
+
+        <label asp-for="NewPost.Header">Rubrik</label>
+        <input asp-for="NewPost.Header" />
+        <br /><br />
+
+        <label asp-for="NewPost.Text">Text</label>
+        <textarea asp-for="NewPost.Text" cols="40" rows="5"></textarea>
+        <br /><br />
+
+        <label asp-for="NewPost.Image"></label>
+        <input type="file" name="UploadedImage" />
+        <br /><br />
+
+        <input type="submit" class="btn btn-success" value="Skapa" />
+    </form>
+}

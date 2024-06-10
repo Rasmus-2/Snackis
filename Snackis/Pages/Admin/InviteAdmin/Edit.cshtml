@@ -1,0 +1,46 @@
+﻿@page
+@model Snackis.Pages.Admin.InviteAdmin.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Invite</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Invite.Id" />
+            <div class="form-group">
+                <label asp-for="Invite.GroupId" class="control-label"></label>
+                <input asp-for="Invite.GroupId" class="form-control" />
+                <span asp-validation-for="Invite.GroupId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Invite.ReceiverId" class="control-label"></label>
+                <input asp-for="Invite.ReceiverId" class="form-control" />
+                <span asp-validation-for="Invite.ReceiverId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Invite.Message" class="control-label"></label>
+                <input asp-for="Invite.Message" class="form-control" />
+                <span asp-validation-for="Invite.Message" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

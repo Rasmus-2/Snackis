@@ -1,0 +1,187 @@
+﻿@page
+@model Snackis.Pages.MyPageModel
+@{
+}
+
+@if (Model.MyUser != null && Model.InfoPage != null && Model.MyUser.Id == Model.InfoPage.UserId)
+{
+    @if (Model.ShowMyPosts)
+    {
+        foreach (var post in Model.MyPosts)
+        {
+            <div class="card">
+                @if (post.Header != null)
+                {
+                    <div class="card-header">
+                        <h1 class="card-title">@post.Header</h1>
+                    </div>
+                }
+                <div class="card-body">
+                    @if (post.Image != null && post.Image != "")
+                    {
+                        <img class="img-fluid" src="~/images/postImages/@post.Image" />
+                    }
+                    <br /><br />
+                    @if (post.Text != null)
+                    {
+                        <p class="card-text" style="white-space:pre-wrap">@post.Text</p>
+                    }
+                    <br />
+                </div>
+
+                <div class="card-footer">
+                    <p>@post.Date</p>
+                    @if (post.UserIdLikes.Count() > 1)
+                    {
+                        <p>@post.UserIdLikes.Count() personer gillar det här inlägget</p>
+                    }
+                    else if (post.UserIdLikes.Count() == 1)
+                    {
+                        <p>@post.UserIdLikes.Count() person gillar det här inlägget</p>
+                    }
+                </div>
+            </div>
+            <br />
+        }
+    }
+    else if (Model.ShowMyLiked)
+    {
+        foreach (var post in Model.MyLiked)
+        {
+            <div class="row card">
+                @if (post.Header != null)
+                {
+                    <div class="card-header">
+                        <h1 class="card-title">@post.Header</h1>
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-4 border bg-light">
+                        <a asp-route-userId="@post.UserId"><p>@Model.FindUserName(post.UserId).Result</p></a>
+                        @if (@Model.FindUserProfilePicture(post.UserId).Result != null)
+                        {
+                            <img class="img-fluid" src="~/images/profilePictureImages/@Model.FindUserProfilePicture(post.UserId).Result" />
+                        }
+                        <br /><br />
+                        <p>@post.Date</p>
+
+                    </div>
+                    <div class="col-8">
+                        @if (post.Image != null && post.Image != "")
+                        {
+                            <img class="img-fluid" src="~/images/postImages/@post.Image" />
+                        }
+                        <br /><br />
+                        @if (post.Text != null)
+                        {
+                            <p class="card-text" style="white-space:pre-wrap">@post.Text</p>
+                        }
+                        <br />
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    @if (post.UserIdLikes.Count() > 1)
+                    {
+                        <p>@post.UserIdLikes.Count() personer gillar det här inlägget</p>
+                    }
+                    else if (post.UserIdLikes.Count() == 1)
+                    {
+                        <p>@post.UserIdLikes.Count() person gillar det här inlägget</p>
+                    }
+                </div>
+            </div>
+            <br />
+        }
+    }
+    else
+    {
+
+        @if (Model.InfoPage.Image != null)
+        {
+            <img class="img-fluid" src="~/images/myPageImages/@Model.InfoPage.Image" />
+            <a asp-route-deleteMyPageImageId="@Model.InfoPage.Id">Radera bild</a>
+        }
+        else
+        {
+            <a asp-route-addMyPageImageId="@Model.InfoPage.Id">Lägg till omslagsbild</a>
+            @if (Model.AddMyPageImage)
+            {
+                <form method="post" enctype="multipart/form-data" asp-page-handler="myPageImage">
+                    <input asp-for="@Model.InfoPage.Id" type="hidden" />
+                    <input type="file" name="UploadedImage" />
+                    <input type="submit" value="Spara" />
+                </form>
+            }
+        }
+
+        <h1 class="display-4">@Model.InfoPage.Header</h1>
+        <a asp-route-changeHeaderId="@Model.InfoPage.Id">Ändra rubrik</a>
+        <br />
+        <br />
+        @if (Model.ChangeHeader)
+        {
+            <form method="post" asp-page-handler="header">
+                <input asp-for="@Model.InfoPage.Id" type="hidden" />
+                <input asp-for="@Model.InfoPage.Header" />
+                <input type="submit" value="Spara" />
+            </form>
+        }
+
+        <h3>Profilbild</h3>
+        @if (Model.MyUser.ProfilePicture != null)
+        {
+            <img src="~/images/profilePictureImages/@Model.MyUser.ProfilePicture" style="width: 18rem" />
+            <a asp-route-deleteProfilePictureId="@Model.InfoPage.Id">Radera bild</a>
+        }
+        else
+        {
+            <a asp-route-addProfilePictureId="@Model.InfoPage.Id">Lägg till bild</a>
+            @if (Model.AddProfilePicture)
+            {
+                <form method="post" enctype="multipart/form-data" asp-page-handler="profilePicture">
+                    <input asp-for="@Model.InfoPage.Id" type="hidden" />
+                    <input type="file" name="UploadedImage" />
+                    <input type="submit" value="Spara" />
+                </form>
+            }
+        }
+
+        <h3>Inbjudningar till grupper: </h3>
+        @foreach (var invite in Model.MyInvites)
+        {
+            <span>Du är inbjuden till @Model.GetGroupName(invite.GroupId).Result av @Model.GetGropOwnerUsername(invite.GroupId).Result</span>
+            <a asp-route-joinGroupId="@invite.GroupId">Ja</a>
+            <a asp-route-declineGroupId="@invite.GroupId">Nej</a>
+            <p>@invite.Message</p>
+            <br />
+            <br />
+        }
+
+        <h3>@Model.MyUser.FirstName @Model.MyUser.LastName</h3>
+
+        <h3>Om mig</h3>
+        @if (Model.InfoPage.Text != null)
+        {
+            <p style="white-space:pre-wrap">@Model.InfoPage.Text</p>
+        }
+        <a asp-route-changeTextId="@Model.InfoPage.Id">Ändra text</a>
+        @if (Model.ChangeText)
+        {
+            <form method="post" asp-page-handler="text">
+                <input asp-for="@Model.InfoPage.Id" type="hidden" />
+                <input asp-for="@Model.InfoPage.Text" />
+                <input type="submit" value="Spara" />
+            </form>
+        }
+
+        <br />
+        <br />
+        <p>Sidan ändrades senast: @Model.InfoPage.LastChanged</p>
+
+        <a asp-route-showMyPostsId="@Model.InfoPage.Id">Mina inlägg</a>
+        <a asp-route-showMyLikedPostsId="@Model.InfoPage.Id">Mina gillade inlägg</a>
+    }
+}
+

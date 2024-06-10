@@ -1,0 +1,50 @@
+﻿@page
+@model Snackis.Pages.YourPageModel
+@{
+}
+
+@if (Model.YourInfoPage.Image != null && Model.YourInfoPage.Image != "")
+{
+    <img class="img-fluid" src="~/images/myPageImages/@Model.YourInfoPage.Image" />
+}
+
+<h2>@Model.YourInfoPage.Header</h2>
+
+<img src="~/images/profilePictureImages/@Model.PageOwner.ProfilePicture" style="width: 18rem" />
+
+<h3>@Model.PageOwner.FirstName @Model.PageOwner.LastName</h3>
+
+@if (Model.MyUser.Id != Model.PageOwner.Id)
+{
+    <a asp-route-message="@Model.PageOwner.Id">Skicka meddelande</a>
+
+    <br />
+    <br />
+
+
+    @foreach (var group in Model.MyGroups)
+    {
+        @if (!group.UserIds.Contains(Model.PageOwner.Id))
+        {
+            <h5>Bjud in till grupp: </h5>
+
+            <a asp-route-userId="@Model.PageOwner.Id" asp-route-groupId="@group.Id">@group.Name</a>
+            <br />
+
+            if (Model.ShowInvite == group.Id)
+            {
+                <form method="post">
+                    <input type="hidden" asp-for="NewInvite.GroupId" value="@group.Id" />
+                    <input type="hidden" asp-for="NewInvite.ReceiverId" value="@Model.PageOwner.Id" />
+                    <label asp-for="NewInvite.Message">Skicka med ett meddelande (valfritt)</label>
+                    <input asp-for="NewInvite.Message" />
+                    <input type="submit" value="Skicka inbjudan" />
+                </form>
+            }
+        }
+    }
+}
+
+<p style="white-space:pre-wrap">@Model.YourInfoPage.Text</p>
+
+<p>Sidan ändrades senast: @Model.YourInfoPage.LastChanged</p>
